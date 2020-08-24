@@ -18,9 +18,9 @@ namespace Tests.Stories
             var editEndpoint = new EditStateEndpoint(persistenceMock.EditStateEndpoint());
             //action
 
-            editEndpoint.Executar(ModelsMock.EndpointMock().SerialNumber, ModelsMock.EndpointMock().State);
+            editEndpoint.Execute(ModelsMock.EndpointMock().SerialNumber, ModelsMock.EndpointMock().State);
             //assert
-            Assert.Empty(editEndpoint.Erros);
+            Assert.Empty(editEndpoint.Error);
         }
     }
 }

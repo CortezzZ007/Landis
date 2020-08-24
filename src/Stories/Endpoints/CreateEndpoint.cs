@@ -9,7 +9,7 @@ namespace Stories.Endpoints
 {
     public class CreateEndpoint
     {
-        public Dictionary<string, string> Erros { get; private set; }
+        public Dictionary<string, string> Error { get; private set; }
         private readonly IEndpointPersistence endpointPersistence;
 
         public CreateEndpoint(IEndpointPersistence endpointPersistence)
@@ -17,9 +17,9 @@ namespace Stories.Endpoints
             this.endpointPersistence = endpointPersistence;
         }
 
-        public void Executar(Endpoint endpoint)
+        public void Execute(Endpoint endpoint)
         {
-            Erros = new Dictionary<string, string>();
+            Error = new Dictionary<string, string>();
             try
             {
                 this.endpointPersistence.CreateEndpoint(endpoint);
@@ -27,7 +27,7 @@ namespace Stories.Endpoints
             catch (Exception ex)
             {
 
-                Erros.Add("Algo Inesperado Aconteceu", ex.Message);
+                Error.Add("Something Unexpected Has Happened", ex.Message);
             }
         }
     }

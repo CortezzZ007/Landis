@@ -8,7 +8,7 @@ namespace Stories.Endpoints
 {
     public class SearchBySerialNumber
     {
-        public Dictionary<string, string> Erros { get; private set; }
+        public Dictionary<string, string> Error { get; private set; }
         private readonly IEndpointPersistence endpointPersistence;
 
         public SearchBySerialNumber(IEndpointPersistence endpointPersistence)
@@ -16,13 +16,13 @@ namespace Stories.Endpoints
             this.endpointPersistence = endpointPersistence;
         }
 
-        public Endpoint Executar(string serialNumber)
+        public Endpoint Execute(string serialNumber)
         {
-            Erros = new Dictionary<string, string>();
+            Error = new Dictionary<string, string>();
             var endpoint = this.endpointPersistence.SearchBySerialNumber(serialNumber);
             if(endpoint == null)
             {
-                Erros.Add("Endpoint", "Não encontrado.");
+                Error.Add("Endpoint", "not found.");
             }
             return endpoint;
         }

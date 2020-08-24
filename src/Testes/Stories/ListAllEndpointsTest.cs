@@ -19,7 +19,7 @@ namespace Tests.Stories
             var listAllEndpoints = new ListAllEndpoints(persistenceMock.ListAll());
 
             //action
-            var endpoints = listAllEndpoints.Executar();
+            var endpoints = listAllEndpoints.Execute();
 
             //assert
             Assert.Equal(ModelsMock.ListEndpointMock().Count, endpoints.Count);

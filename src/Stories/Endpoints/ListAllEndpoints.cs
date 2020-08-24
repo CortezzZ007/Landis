@@ -14,7 +14,7 @@ namespace Stories
             this.endpointPersistence = endpointPersistence;
         }
 
-        public List<Endpoint> Executar()
+        public List<Endpoint> Execute()
         {
             var endpoints = this.endpointPersistence.ListAll();
             return endpoints;

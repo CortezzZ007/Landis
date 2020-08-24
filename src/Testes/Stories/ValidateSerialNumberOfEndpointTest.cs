@@ -22,10 +22,10 @@ namespace Tests.Stories
             var validateSerialNumberOfEndpoint = new ValidateSerialNumberOfEndpoint(endpointPersistence.Object);
 
             //action
-            var meterModelId = validateSerialNumberOfEndpoint.Executar(ModelsMock.EndpointMock().SerialNumber);
+            var meterModelId = validateSerialNumberOfEndpoint.Execute(ModelsMock.EndpointMock().SerialNumber);
 
             //assert
-            Assert.Empty(validateSerialNumberOfEndpoint.Erros);
+            Assert.Empty(validateSerialNumberOfEndpoint.Error);
             Assert.Equal(ModelsMock.EndpointMock().MeterModelId, meterModelId);
         }
 
@@ -38,14 +38,14 @@ namespace Tests.Stories
             var validateSerialNumberOfEndpoint = new ValidateSerialNumberOfEndpoint(persistenceMock.SearchBySerialNumber());
 
             //action
-            var meterModelId = validateSerialNumberOfEndpoint.Executar(ModelsMock.EndpointMock().SerialNumber);
-            key = validateSerialNumberOfEndpoint.Erros.First().Key;
-            value = validateSerialNumberOfEndpoint.Erros.First().Value;
+            var meterModelId = validateSerialNumberOfEndpoint.Execute(ModelsMock.EndpointMock().SerialNumber);
+            key = validateSerialNumberOfEndpoint.Error.First().Key;
+            value = validateSerialNumberOfEndpoint.Error.First().Value;
 
             //assert
-            Assert.True(validateSerialNumberOfEndpoint.Erros.Count > 0);
+            Assert.True(validateSerialNumberOfEndpoint.Error.Count > 0);
             Assert.True(meterModelId == 0);
-            Assert.True(key == "Endpoint" && value == "Já existe um endpoint com este serial number");
+            Assert.True(key == "Endpoint" && value == "An endpoint with this serial number already exists");
         }
 
 

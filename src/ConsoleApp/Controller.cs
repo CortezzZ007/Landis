@@ -21,6 +21,8 @@ namespace ConsoleApp
         private readonly SearchBySerialNumber searchBySerialNumber;
         private readonly EditStateEndpoint editStateEndpoint;
         private readonly DeleteEndpoint deleteEndpoint;
+        private readonly string error = "Invalid value";
+        private readonly string sucess = "Operation performed successfully!";
 
         public Controller(Stories.Interfaces.IEndpointPersistence endpointPersistence)
         {
@@ -35,18 +37,20 @@ namespace ConsoleApp
         public void MenuInitial()
         {
             int chosenItem;
+            Console.Clear();
+            Console.WriteLine("\nWelcome to Landis+Gyr");
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("\nChoose the action you want to perform.");
+            Console.WriteLine("\n1- New Endpoint");
+            Console.WriteLine("\n2- Edit Endpoint");
+            Console.WriteLine("\n3- List all endpoints");
+            Console.WriteLine("\n4- Search for an endpoint");
+            Console.WriteLine("\n5- Delete an Endpoint");
+            Console.WriteLine("\n6- Exit");
 
-            Console.WriteLine("Bem vindo à Landis+Gyr");
-            Console.WriteLine("\n---------------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("\nEscolha a ação que deseja realizar:");
-            Console.WriteLine("\n1- Criar Endpoint");
-            Console.WriteLine("\n2- Editar Endpoint");
-            Console.WriteLine("\n3- Listar todos Endpoints");
-            Console.WriteLine("\n4- Procurar um Endpoint");
-            Console.WriteLine("\n5- Deletar um Endpoint");
+            Console.WriteLine("\nObs: To return to the initial menu, type EXIT at any time.");
 
-            Console.WriteLine("\nDigite o numero da ação e pressione enter");
-            chosenItem = int.Parse(Console.ReadLine());
+            chosenItem = CustomInputValidation.GetInteger("\nType the action number and press enter: ", this.error);
 
             switch (chosenItem)
             {
@@ -59,7 +63,7 @@ namespace ConsoleApp
                     break;
 
                 case 3:
-                    this.Listar();
+                    this.ListEndpoints();
                     break;
 
                 case 4:
@@ -69,8 +73,12 @@ namespace ConsoleApp
                 case 5:
                     this.Delete();
                     break;
+
+                case 6:
+                    this.Exit();
+                    break;
                 default:
-                    Console.WriteLine("\nEscolha uma opção válida.");
+                    Console.WriteLine("\nChoose a valid option: ");
                     Console.Clear();
                     this.MenuInitial();
                     break;
@@ -79,116 +87,130 @@ namespace ConsoleApp
         public void CreateEndpoint()
         {
             var endpointDto = new EndpointDto();
-            Console.WriteLine("Digite o numero de série do endpoint:");
-            endpointDto.SerialNumber = Console.ReadLine();
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("\nStarting an endpoint registration");
+            endpointDto.SerialNumber = CustomInputValidation.GetString("\nType the serial number of the endpoint and press enter: ", this.error);
 
-            endpointDto.MeterModelId = this.validateSerialNumberOfEndpoint.Executar(endpointDto.SerialNumber);
-            if (this.validateSerialNumberOfEndpoint.Erros.Count > 0)
+            endpointDto.MeterModelId = this.validateSerialNumberOfEndpoint.Execute(endpointDto.SerialNumber);
+            if (this.validateSerialNumberOfEndpoint.Error.Count > 0)
             {
-                Console.WriteLine(this.validateSerialNumberOfEndpoint.Erros.First());
+                Console.WriteLine(this.validateSerialNumberOfEndpoint.Error.First());
                 this.CreateEndpoint();
             }
 
             if (endpointDto.MeterModelId == 0)
             {
-                endpointDto.MeterModelId = CustomValidateInput.GetInteger("Digite o id do modelo:", "Valor invalido");
+                endpointDto.MeterModelId = CustomInputValidation.GetInteger("\nType the model meter id and press enter: ", this.error);
             }
             else
             {
-                Console.WriteLine("ID do modelo do medido: " + endpointDto.MeterModelId.ToString());
+                Console.WriteLine("Model Meter ID: " + endpointDto.MeterModelId.ToString());
             }
 
-            endpointDto.MeterNumber = CustomValidateInput.GetInteger("Digite o numero do medidor:", "Valor invalido");
-            endpointDto.MeterFirmwareVersion = CustomValidateInput.GetInteger("Digite a versão da Firmware do medidor:", "Valor invalido");
-            Console.WriteLine("Escolha em qual estado se encontra o endpoint: ");
-            Console.WriteLine("1- Desconectado");
-            Console.WriteLine("2- Conectado");
-            Console.WriteLine("3- Armado");
+            endpointDto.MeterNumber = CustomInputValidation.GetInteger("\nType the meter number and press enter: ", this.error);
+            endpointDto.MeterFirmwareVersion = CustomInputValidation.GetString("\nType the Meter Firmware version and press enter: ", this.error);
+            Console.WriteLine("\nChoose which state the endpoint is in: ");
+            Console.WriteLine("1- Disconnected");
+            Console.WriteLine("2- Connected");
+            Console.WriteLine("3- Armed");
 
-            endpointDto.State = CustomValidateInput.GetInteger("Digite a opção da sua escolha e pressione enter:", "Valor invalido");
+            endpointDto.State = CustomInputValidation.GetInteger("Type the option of your choice and press enter: ", this.error);
 
-            this.createEndpoint.Executar(EndpointFactory.MapearEndpoint(endpointDto));
-            Console.WriteLine("Operação realizada com sucesso!");
+            this.createEndpoint.Execute(EndpointFactory.MapEndpoint(endpointDto));
+            Console.WriteLine("\nRegistration completed");
+            Console.WriteLine(this.sucess);
             this.BackMenuInitial();
+
         }
 
         public void Edit()
         {
             var endpointDto = new EndpointDto();
-            Console.WriteLine("Digite o serial number do endpoint que deseja editar:");
-            endpointDto.SerialNumber = Console.ReadLine();
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------");
+            endpointDto.SerialNumber = CustomInputValidation.GetString("\nType the serial number of the endpoint you want to edit and press enter: ", this.error);
 
-            endpointDto = EndpointFactory.MapearEndpointDto(this.searchBySerialNumber.Executar(endpointDto.SerialNumber));
-            if (this.searchBySerialNumber.Erros.Count > 0)
+            endpointDto = EndpointFactory.MapEndpointDto(this.searchBySerialNumber.Execute(endpointDto.SerialNumber));
+            if (this.searchBySerialNumber.Error.Count > 0)
             {
 
-                Console.WriteLine(this.searchBySerialNumber.Erros.First());
+                Console.WriteLine(this.searchBySerialNumber.Error.First());
                 this.Edit();
             }
-            Console.WriteLine("Endpoint encontrado!");
-            var dadosTable = new List<EndpointDto>();
-            dadosTable.Add(endpointDto);
+            Console.WriteLine("\nEndpoint found!");
+            var tableData = new List<EndpointDto>();
+            tableData.Add(endpointDto);
 
-            var table = ConsoleTable.From(dadosTable);
+            var table = ConsoleTable.From(tableData).Configure(y => y.EnableCount = false);
             Console.Write(table);
 
-            var chosenItem = CustomValidateInput.GetInteger("Deseja alterar o estado do endpoint?\n1- Sim\n2- Não", "Valor invalido");
+            var chosenItem = CustomInputValidation.GetInteger("\nDo you want to change the endpoint state?\n1- Yes\n2- No\nType the desired option and press enter:  ", this.error);
             if (chosenItem == 1)
             {
-                Console.WriteLine("Escolha em qual estado se encontra o endpoint: ");
-                Console.WriteLine("1- Desconectado");
-                Console.WriteLine("2- Conectado");
-                Console.WriteLine("3- Armado");
+                Console.WriteLine("\nStarting endpoint editing.");
+                Console.WriteLine("\nChoose which state the endpoint is in: ");
+                Console.WriteLine("1- Disconnected");
+                Console.WriteLine("2- Connected");
+                Console.WriteLine("3- Armed");
 
-                endpointDto.State = CustomValidateInput.GetInteger("Digite a opção da sua escolha e pressione enter:", "Valor invalido");
+                endpointDto.State = CustomInputValidation.GetInteger("Type the option of your choice and press enter: ", this.error);
 
                 while (!(endpointDto.State == 1 || endpointDto.State == 2 || endpointDto.State == 3))
                 {
-                    Console.WriteLine("Opção invalida.");
-                    endpointDto.State = CustomValidateInput.GetInteger("Digite a opção da sua escolha e pressione enter:", "Valor invalido");
+                    Console.WriteLine("Option invalid.");
+                    endpointDto.State = CustomInputValidation.GetInteger("Type the option of your choice and press enter: ", this.error);
 
                 }
 
-                this.editStateEndpoint.Executar(endpointDto.SerialNumber, endpointDto.State);
-                Console.WriteLine("Operação realizada com sucesso.");
+                this.editStateEndpoint.Execute(endpointDto.SerialNumber, endpointDto.State);
+                if (editStateEndpoint.Error.Count > 0)
+                {
+                    Console.WriteLine(editStateEndpoint.Error.First());
+                }
+                else
+                {
+                    Console.WriteLine("\nFinished editing");
+                    Console.WriteLine(sucess);
+                }
             }
+
             this.BackMenuInitial();
         }
 
         public void Delete()
         {
             var endpointDto = new EndpointDto();
-            Console.WriteLine("Digite o serial number do endpoint que deseja excluir:");
-            endpointDto.SerialNumber = Console.ReadLine();
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("\nDelete Endpoint");
+            endpointDto.SerialNumber = CustomInputValidation.GetString("\nType the serial number of the endpoint you want to delete and press enter: ", this.error);
 
-            endpointDto = EndpointFactory.MapearEndpointDto(this.searchBySerialNumber.Executar(endpointDto.SerialNumber));
-            if (this.searchBySerialNumber.Erros.Count > 0)
+            endpointDto = EndpointFactory.MapEndpointDto(this.searchBySerialNumber.Execute(endpointDto.SerialNumber));
+            if (this.searchBySerialNumber.Error.Count > 0)
             {
-                Console.WriteLine(this.searchBySerialNumber.Erros.First());
+                Console.WriteLine(this.searchBySerialNumber.Error.First());
                 this.Delete();
             }
-            Console.WriteLine("Endpoint encontrado!");
-            var dadosTable = new List<EndpointDto>();
-            dadosTable.Add(endpointDto);
+            Console.WriteLine("\nEndpoint found!");
+            var tableData = new List<EndpointDto>();
+            tableData.Add(endpointDto);
 
-            var table = ConsoleTable.From(dadosTable);
+            var table = ConsoleTable.From(tableData).Configure(y => y.EnableCount = false);
             Console.Write(table);
 
-            var chosenItem = CustomValidateInput.GetInteger("\neseja realmente excluir este endpoint?\n1- Sim\n2- Não", "Valor invalido");
+            var chosenItem = CustomInputValidation.GetInteger("\nDo you really want to delete this endpoint?\n1- Yes\n2- No\nType the desired option and press enter: ", this.error);
 
             while (!(chosenItem == 1 || chosenItem == 2))
             {
-                chosenItem = CustomValidateInput.GetInteger("\neseja realmente excluir este endpoint?\n1- Sim\n2- Não", "Valor invalido");
+                chosenItem = CustomInputValidation.GetInteger("\nDo you really want to delete this endpoint?\n1- Yes\n2- No\nType the desired option and press enter: ", this.error);
             }
-            if(chosenItem == 1)
+            if (chosenItem == 1)
             {
-                this.deleteEndpoint.Executar(endpointDto.SerialNumber);
-                if(this.deleteEndpoint.Erros.Count > 0)
+                this.deleteEndpoint.Execute(endpointDto.SerialNumber);
+                if (this.deleteEndpoint.Error.Count > 0)
                 {
-                    Console.WriteLine(this.searchBySerialNumber.Erros.First());
+                    Console.WriteLine(this.searchBySerialNumber.Error.First());
                     this.Delete();
                 }
-                Console.WriteLine("Operação realizada com sucesso.");
+                Console.WriteLine("\n" + sucess);
             }
             this.BackMenuInitial();
         }
@@ -196,31 +218,36 @@ namespace ConsoleApp
         public void SearchEndpoint()
         {
             var endpointDto = new EndpointDto();
-            Console.WriteLine("Digite o serial number do endpoint que deseja encontrar:");
-            endpointDto.SerialNumber = Console.ReadLine();
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("Search for an endpoint");
+            endpointDto.SerialNumber = CustomInputValidation.GetString("\nType the serial number of the endpoint you want to find and press enter: ", this.error);
 
-            endpointDto = EndpointFactory.MapearEndpointDto(this.searchBySerialNumber.Executar(endpointDto.SerialNumber));
-            if (this.searchBySerialNumber.Erros.Count > 0)
+            endpointDto = EndpointFactory.MapEndpointDto(this.searchBySerialNumber.Execute(endpointDto.SerialNumber));
+            if (this.searchBySerialNumber.Error.Count > 0)
             {
-                Console.WriteLine(this.searchBySerialNumber.Erros.First());
+                Console.WriteLine(this.searchBySerialNumber.Error.First());
                 this.SearchEndpoint();
             }
-            Console.WriteLine("Endpoint encontrado!");
-            var dadosTable = new List<EndpointDto>();
-            dadosTable.Add(endpointDto);
 
-            var table = ConsoleTable.From(dadosTable);
+            Console.WriteLine("\nEndpoint found!");
+            var tableData = new List<EndpointDto>();
+            tableData.Add(endpointDto);
+
+            var table = ConsoleTable.From(tableData).Configure(y => y.EnableCount = false);
             Console.Write(table);
             this.BackMenuInitial();
         }
 
-        public void Listar()
+        public void ListEndpoints()
         {
-            Console.WriteLine("Listagem de todos os endpoints");
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("\nList of all endpoints");
 
-            var endpoints = this.listAllEndpoints.Executar();
+            var endpoints = this.listAllEndpoints.Execute();
 
             var table = ConsoleTable.From(endpoints);
+
+            Console.WriteLine("\n");
             Console.Write(table);
             this.BackMenuInitial();
         }
@@ -228,18 +255,33 @@ namespace ConsoleApp
         public void BackMenuInitial()
         {
             int returnItem;
-            Console.WriteLine("\n------------------------------------------------------------------------------------------------------");
-            returnItem = CustomValidateInput.GetInteger("Digite 0 para retornar ao menu inicial.", "Valor digitado inválido");
+
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------");
+            returnItem = CustomInputValidation.GetInteger("Type 0 and press enter to return to the home menu: ", this.error);
 
             while (returnItem != 0)
             {
-                Console.WriteLine("\nOpcão Invalida");
-                returnItem = CustomValidateInput.GetInteger("Digite 0 para retornar ao menu inicial.", "Valor digitado inválido");
+                Console.WriteLine("\nInvalid Option.");
+                returnItem = CustomInputValidation.GetInteger("Type 0 and press enter to return to the home menu: ", this.error);
 
             }
 
-            this.MenuInitial();
             Console.Clear();
+            this.MenuInitial();
+        }
+
+        public void Exit()
+        {
+            var chosenItem = CustomInputValidation.GetInteger("\nDo you really want to leave?\n1- Yes\n2- No\nType the desired option and press enter: ", this.error);
+            if (chosenItem == 1)
+            {
+                Environment.Exit(0);
+            }
+            else
+            {
+                this.MenuInitial();
+            }
+
         }
     }
 }

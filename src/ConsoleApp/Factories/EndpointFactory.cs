@@ -8,7 +8,7 @@ namespace ConsoleApp.Factories
 {
     public static class EndpointFactory
     {
-        public static Endpoint MapearEndpoint(EndpointDto endpointDto)
+        public static Endpoint MapEndpoint(EndpointDto endpointDto)
         {
             var endpoint = new Endpoint(endpointDto.SerialNumber, endpointDto.MeterModelId, endpointDto.MeterNumber,
                 endpointDto.MeterFirmwareVersion, endpointDto.State);
@@ -17,7 +17,7 @@ namespace ConsoleApp.Factories
                           
         }
 
-        public static EndpointDto MapearEndpointDto(Endpoint endpoint)
+        public static EndpointDto MapEndpointDto(Endpoint endpoint)
         {
             var endpointDto = new EndpointDto();
             if(endpoint != null)

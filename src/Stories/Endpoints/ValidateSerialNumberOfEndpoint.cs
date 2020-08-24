@@ -5,7 +5,7 @@ namespace Stories.Endpoints
 {
     public class ValidateSerialNumberOfEndpoint
     {
-        public Dictionary<string, string> Erros { get; private set; } 
+        public Dictionary<string, string> Error { get; private set; } 
         private readonly IEndpointPersistence endpointPersistence;
 
         public ValidateSerialNumberOfEndpoint(IEndpointPersistence endpointPersistence)
@@ -13,14 +13,14 @@ namespace Stories.Endpoints
             this.endpointPersistence = endpointPersistence;
         }
 
-        public int Executar(string serialNumber)
+        public int Execute(string serialNumber)
         {
-            Erros = new Dictionary<string, string>();
+            Error = new Dictionary<string, string>();
             var endpoint = this.endpointPersistence.SearchBySerialNumber(serialNumber);
             
             if (endpoint != null)
             {
-                this.Erros.Add("Endpoint", "Já existe um endpoint com este serial number");
+                this.Error.Add("Endpoint", "An endpoint with this serial number already exists");
                 return 0;
             }
 

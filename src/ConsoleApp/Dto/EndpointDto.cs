@@ -9,7 +9,7 @@ namespace ConsoleApp.Dto
         public string SerialNumber { get; set; }
         public int MeterModelId { get; set; }
         public int MeterNumber { get; set; }
-        public int MeterFirmwareVersion { get; set; }
+        public string MeterFirmwareVersion { get; set; }
         public int State { get; set; }
     }
 }

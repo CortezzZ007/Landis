@@ -18,10 +18,10 @@ namespace Tests.Stories
             var searchBySerialNumber = new SearchBySerialNumber(persistenceMock.SearchBySerialNumber());
             
             //action
-            var endpoint = searchBySerialNumber.Executar(ModelsMock.EndpointMock().SerialNumber);
+            var endpoint = searchBySerialNumber.Execute(ModelsMock.EndpointMock().SerialNumber);
 
             //assert
-            Assert.Empty(searchBySerialNumber.Erros);
+            Assert.Empty(searchBySerialNumber.Error);
             Assert.Equal(ModelsMock.EndpointMock().SerialNumber, endpoint.SerialNumber);
             Assert.NotNull(endpoint);
         }

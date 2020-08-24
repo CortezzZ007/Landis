@@ -10,17 +10,17 @@ namespace Tests.Stories
     public class DeleteEndpointTest
     {
         [Fact]
-        public void MustCreateAendpoint()
+        public void MustDeleteAendpoint()
         {
             //arrange
             PersistenceMock persistenceMock = new PersistenceMock();
             var deleteEndpoint = new DeleteEndpoint(persistenceMock.DeleteEndpoint());
             //action
 
-            deleteEndpoint.Executar(ModelsMock.EndpointMock().SerialNumber);
+            deleteEndpoint.Execute(ModelsMock.EndpointMock().SerialNumber);
 
             //assert
-            Assert.Empty(deleteEndpoint.Erros);
+            Assert.Empty(deleteEndpoint.Error);
 
         }
     }

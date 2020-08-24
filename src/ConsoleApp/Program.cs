@@ -9,7 +9,7 @@ namespace ConsoleApp
 {
     class Program
     {
-        static ServiceProvider RegistrarServices()
+        public static ServiceProvider RegisterServices()
         {
             var services = new ServiceCollection();
 
@@ -21,7 +21,7 @@ namespace ConsoleApp
 
         static void Main(string[] args)
         {
-            using (ServiceProvider container = RegistrarServices())
+            using (ServiceProvider container = RegisterServices())
             {
                 var controller = container.GetRequiredService<Controller>();
                 controller.MenuInitial();

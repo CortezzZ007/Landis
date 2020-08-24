@@ -7,7 +7,7 @@ namespace Stories.Endpoints
 {
     public class DeleteEndpoint
     {
-        public Dictionary<string, string> Erros { get; private set; }
+        public Dictionary<string, string> Error { get; private set; }
         private readonly IEndpointPersistence endpointPersistence;
 
         public DeleteEndpoint(IEndpointPersistence endpointPersistence)
@@ -15,21 +15,21 @@ namespace Stories.Endpoints
             this.endpointPersistence = endpointPersistence;
         }
 
-        public void Executar(string serialNumber)
+        public void Execute(string serialNumber)
         {
-            Erros = new Dictionary<string, string>();
+            Error = new Dictionary<string, string>();
             try
             {
                 var endpoint = this.endpointPersistence.SearchBySerialNumber(serialNumber);
                 if(endpoint == null)
-                    Erros.Add("Endpoint", "não encontrado.");
+                    Error.Add("Enpoint", "not found.");
 
                 this.endpointPersistence.DeleteEndpoint(serialNumber);
             }
             catch (Exception Ex)
             {
 
-                Erros.Add("Aconteceu algo inesperado", Ex.ToString());
+                Error.Add("Something Unexpected Has Happened", Ex.ToString());
             }
         }
     }

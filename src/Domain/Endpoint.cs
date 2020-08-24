@@ -4,7 +4,7 @@ namespace Domain
 {
     public class Endpoint
     {
-        public Endpoint(string serialNumber, int meterModelId, int meterNumber, int meterFirmwareVersion, int state)
+        public Endpoint(string serialNumber, int meterModelId, int meterNumber, string meterFirmwareVersion, int state)
         {
             SerialNumber = serialNumber;
             MeterModelId = meterModelId;
@@ -16,7 +16,7 @@ namespace Domain
         public string SerialNumber { get; private set; }
         public int MeterModelId { get; private set; }
         public int MeterNumber { get; private set; }
-        public int MeterFirmwareVersion { get; private set; }
+        public string MeterFirmwareVersion { get; private set; }
         public int State { get; private set; }
 
         public void EditState(int state)

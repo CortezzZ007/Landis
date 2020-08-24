@@ -17,10 +17,10 @@ namespace Testes
             var createEndpoint = new CreateEndpoint(persistenceMock.CreateEndpoint());
             //action
 
-            createEndpoint.Executar(ModelsMock.EndpointMock());
+            createEndpoint.Execute(ModelsMock.EndpointMock());
 
             //assert
-            Assert.Empty(createEndpoint.Erros);
+            Assert.Empty(createEndpoint.Error);
 
         }
     }
