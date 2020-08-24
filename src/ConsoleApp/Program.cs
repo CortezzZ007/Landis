@@ -14,7 +14,7 @@ namespace ConsoleApp
             var services = new ServiceCollection();
 
             services.AddSingleton<IEndpointPersistence, EndpointPersistence>();
-            services.AddTransient<Controller>();
+            services.AddTransient<EndpointConsole>();
 
             return services.BuildServiceProvider();
         }
@@ -23,8 +23,8 @@ namespace ConsoleApp
         {
             using (ServiceProvider container = RegisterServices())
             {
-                var controller = container.GetRequiredService<Controller>();
-                controller.MenuInitial();
+                var endpointConsole = container.GetRequiredService<EndpointConsole>();
+                endpointConsole.MenuInitial();
             }
           
         }

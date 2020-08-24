@@ -18,7 +18,7 @@ namespace ConsoleApp
             {
                 using (ServiceProvider container = Program.RegisterServices())
                 {
-                    var controller = container.GetRequiredService<Controller>();
+                    var controller = container.GetRequiredService<EndpointConsole>();
                     controller.MenuInitial();
                 }
             }
@@ -43,7 +43,7 @@ namespace ConsoleApp
             {
                 using (ServiceProvider container = Program.RegisterServices())
                 {
-                    var controller = container.GetRequiredService<Controller>();
+                    var controller = container.GetRequiredService<EndpointConsole>();
                     controller.MenuInitial();
                 }
             }

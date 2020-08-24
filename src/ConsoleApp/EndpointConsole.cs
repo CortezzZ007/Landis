@@ -13,7 +13,7 @@ using System.Text;
 
 namespace ConsoleApp
 {
-    public class Controller
+    public class EndpointConsole
     {
         private readonly CreateEndpoint createEndpoint;
         private readonly ListAllEndpoints listAllEndpoints;
@@ -24,7 +24,7 @@ namespace ConsoleApp
         private readonly string error = "Invalid value";
         private readonly string sucess = "Operation performed successfully!";
 
-        public Controller(Stories.Interfaces.IEndpointPersistence endpointPersistence)
+        public EndpointConsole(Stories.Interfaces.IEndpointPersistence endpointPersistence)
         {
             this.createEndpoint = new CreateEndpoint(endpointPersistence);
             this.listAllEndpoints = new ListAllEndpoints(endpointPersistence);
