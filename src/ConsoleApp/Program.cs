@@ -24,7 +24,7 @@ namespace ConsoleApp
             using (ServiceProvider container = RegisterServices())
             {
                 var endpointConsole = container.GetRequiredService<EndpointConsole>();
-                endpointConsole.MenuInitial();
+                endpointConsole.Initial(endpointConsole);
             }
           
         }

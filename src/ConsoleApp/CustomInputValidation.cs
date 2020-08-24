@@ -5,10 +5,16 @@ using System.Text;
 
 namespace ConsoleApp
 {
-    public static class CustomInputValidation
+    public class CustomInputValidation
     {
+        private readonly EndpointConsole endpointConsole;
 
-        public static int GetInteger(string text, string errorMensage)
+        public CustomInputValidation(EndpointConsole endpointConsole)
+        {
+            this.endpointConsole = endpointConsole;
+        }
+
+        public int GetInteger(string text, string errorMensage)
         {
             System.Console.Write(text);
             string input = Console.ReadLine();
@@ -16,11 +22,7 @@ namespace ConsoleApp
             
             if(input.ToUpper() == "EXIT")
             {
-                using (ServiceProvider container = Program.RegisterServices())
-                {
-                    var controller = container.GetRequiredService<EndpointConsole>();
-                    controller.MenuInitial();
-                }
+                this.endpointConsole.MenuInitial();
             }
             
             if (int.TryParse(input, out value))
@@ -34,18 +36,14 @@ namespace ConsoleApp
             }
         }
 
-        public static string GetString(string text, string errorMensage)
+        public string GetString(string text, string errorMensage)
         {
             System.Console.Write(text);
             string input = Console.ReadLine();
 
             if (input.ToUpper() == "EXIT")
             {
-                using (ServiceProvider container = Program.RegisterServices())
-                {
-                    var controller = container.GetRequiredService<EndpointConsole>();
-                    controller.MenuInitial();
-                }
+                this.endpointConsole.MenuInitial();
             }
 
             if (input != "")
